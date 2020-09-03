@@ -17,11 +17,10 @@ class ProductController extends Controller
     public function index()
     {
         //return Product::all();
-<<<<<<< HEAD
+
         return ProductCollection::collection(Product::paginate(20));
-=======
-        return ProductCollection::collection(Product::all());
->>>>>>> 8be7e4680d536de94208f1fd74e9cd981a472ce5
+
+        // return ProductCollection::collection(Product::all());
     }
 
     /**
