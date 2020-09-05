@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\ProductNotBelongsToUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Model\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -95,6 +97,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $this->productUserCheck($product);
         if($product->update($request->all()))
         {
             return response([
@@ -111,8 +114,17 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $this->productUserCheck($product);
         $product->delete();
 
         return response(null, 204);
+    }
+
+    public function productUserCheck($product)
+    {
+        if(Auth()->user()->id !== $product->user_id)
+        {
+            throw new ProductNotBelongsToUser();
+        }
     }
 }
